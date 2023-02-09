@@ -4,6 +4,8 @@ from datetime import datetime
 from formatcode.convert.fc import FormatCode
 from formatcode.convert import handlers
 
+def work():
+    print("hello")
 
 # currently not working
 def test_format_group_001():
