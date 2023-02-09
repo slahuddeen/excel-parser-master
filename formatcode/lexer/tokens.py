@@ -14,6 +14,7 @@ class Token(object):
     def __init__(self, value):
         self.cleaned_data = self.clean(value)
 
+
     @classmethod
     def match(cls, line):
         raise NotImplementedError
@@ -28,6 +29,11 @@ class SingleSymbolToken(Token):
 
     @classmethod
     def match(cls, line):
+
+        # No-Case match for General.
+        if line.lower() == "general" and cls.symbol == "General":
+            return len(cls.symbol)
+
         if line.startswith(cls.symbol):
             return len(cls.symbol)
 
@@ -110,7 +116,7 @@ class AsteriskSymbol(RegexpToken):
 
 
 class StringSymbol(RegexpToken):
-    regexp = re.compile(r'(?P<value>(^[$+\-():!^&\'~{}<>= ]|(?<=^\\).|^"[^"]*"))')
+    regexp = re.compile(r'(?P<value>(^[$£€¥+\-():!^&\'~{}<>= ]|(?<=^\\).|^"[^"]*"))')
 
     def clean(self, value):
         m = super(StringSymbol, self).clean(value)
@@ -138,7 +144,7 @@ class ConditionToken(RegexpToken):
 
 
 class DateTimeToken(RegexpToken):
-    regexp = re.compile(r'^(?P<value>((yy){1,2}|m{1,5}|d{1,4}|h{1,2}|s{1,2}))')
+    regexp = re.compile(r'(?i)^(?P<value>((yy){1,2}|m{1,5}|d{1,4}|h{1,2}|s{1,2}))')
 
 
 class TimeDeltaToken(RegexpToken):
@@ -150,7 +156,7 @@ class AmPmToken(RegexpToken):
 
 
 class LocaleCurrencyToken(RegexpToken):
-    regexp = re.compile(r'^\[\$(?P<curr>[^-]*)(-(?P<info>[0-9A-Fa-f]{1,8}))?]')
+    regexp = re.compile(r'^\[\$(?P<curr>[^-|\]]*)(-(?P<info>[0-9A-Fa-f]{1,8}))?]')
 
     def clean(self, value):
         m = super(LocaleCurrencyToken, self).clean(value)
@@ -172,3 +178,12 @@ class LocaleCurrencyToken(RegexpToken):
     def number_system(self):
         info = self.cleaned_data['info']
         return info >> 24 & 0xff if info is not None else None
+
+class ForceNumberToken(RegexpToken):
+    regexp = re.compile(r'(?P<value>([1-9*$]|(?<=^\\)))')
+
+    def clean(self, value):
+        m = super(ForceNumberToken, self).clean(value)
+        if m['value'].startswith('"') and len(m['value']) > 1:
+            m['value'] = m['value'].strip('"')
+        return m

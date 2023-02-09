@@ -22,6 +22,12 @@ class cached_property(object):
         result = instance.__dict__[self.func.__name__] = self.func(instance)
         return result
 
+def is_general(value):
+    try:
+        str(value)
+        return True
+    except (ValueError, TypeError):
+        return False
 
 def is_digit(value):
     try:

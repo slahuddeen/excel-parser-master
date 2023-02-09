@@ -73,6 +73,7 @@ class FormatPart(ABC):
     def validate(self):
         if GeneralToken in self.unique_tokens and len(self.unique_tokens) > 1:
             raise GeneralFormatError(self.tokens)
+        
 
     @property
     def handler_class(self):
@@ -111,8 +112,8 @@ class DigitPart(FormatPart):
             if DotDelimiter in self.unique_tokens or EToken in self.unique_tokens:
                 raise DuplicateFractionFormat(self.tokens)
 
-        if AtSymbol in self.unique_tokens:
-            raise IllegalPartToken(self.tokens)
+        #if AtSymbol in self.unique_tokens:
+        #    raise IllegalPartToken(self.tokens)
 
         if TimeDeltaToken in self.unique_tokens and SlashSymbol in self.unique_tokens:
             raise IllegalPartToken(self.tokens)
