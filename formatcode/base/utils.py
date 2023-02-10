@@ -23,11 +23,12 @@ class cached_property(object):
         return result
 
 def is_general(value):
-    try:
-        str(value)
-        return True
-    except (ValueError, TypeError):
-        return False
+    if "general" in str(value):
+        try:
+            str(value)
+            return True
+        except (ValueError, TypeError):
+            return False
 
 def is_digit(value):
     try:

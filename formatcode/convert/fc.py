@@ -52,12 +52,12 @@ class FormatCode(object):
         if value not in (None, ''):
 
             # Shortcut "General" format.
-            #if is_general(self.format_string.lower()):
-            #    # Values above this amount are rounded.
-            #    if value < 1000000000 and value > -1000000000:
-            #        return str(value)
-            #    else:
-            #        return str(round(value))
+            if is_general(self.format_string.lower()):
+               # Values above this amount are rounded.
+               if value < 1000000000 and value > -1000000000:
+                   return str(value)
+               else:
+                   return str(round(value))
 
             # If datetime, use the custom formatter.
             if (isinstance(value, datetime)):
